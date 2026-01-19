@@ -11,6 +11,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build Docker image
         run: docker build -t djangoblog:ci .
+
+      - name: Push image (test)
+        run: |
+          docker tag djangoblog:ci ${{ secrets.DOCKERHUB_USERNAME }}/djangoblog:ci
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/djangoblog:ci
 
