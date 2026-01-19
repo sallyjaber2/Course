@@ -18,10 +18,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t djangoblog:ci .
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/djangoblog:ci .
 
       - name: Push image (test)
-        run: |
-          docker tag djangoblog:ci ${{ secrets.DOCKERHUB_USERNAME }}/djangoblog:ci
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/djangoblog:ci
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/djangoblog:ci
+
 
