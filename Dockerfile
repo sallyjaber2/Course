@@ -1,15 +1,17 @@
-FROM python:3.11
-ENV PYTHONUNBUFFERED 1
-WORKDIR /code/djangoblog/
-RUN  apt-get update && \
-     apt-get install  default-libmysqlclient-dev gettext -y && \
-      rm -rf /var/lib/apt/lists/*
-ADD requirements.txt requirements.txt
-RUN pip install --upgrade pip  && \
-        pip install --no-cache-dir -r requirements.txt   && \
-        pip install --no-cache-dir gunicorn[gevent] && \
-        pip cache purge
-        
-ADD . .
-RUN chmod +x /code/djangoblog/deploy/entrypoint.sh
-ENTRYPOINT ["/code/djangoblog/deploy/entrypoint.sh"]
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    pkg-config \
+    default-libmysqlclient-dev \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+EXPOSE 800
+CMD ["sh", "-c", "python manage.py runserver 0.0.0.0:${PORT:-8000}"]
+
