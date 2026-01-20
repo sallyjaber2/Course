@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: djangoblog
+  labels:
+    app: djangoblog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: djangoblog
+  template:
+    metadata:
+      labels:
+        app: djangoblog
+    spec:
+      containers:
+        - name: app
+          image: REPLACE_WITH_ECR_IMAGE:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+
